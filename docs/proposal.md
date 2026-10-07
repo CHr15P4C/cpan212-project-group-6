@@ -1,3 +1,5 @@
+
+
 #M1
 1. Problem and users.
 Planning meals with dietary constraints is difficult, and many apps that do it well are very expensive ie:Noom which is $70 per month. People should be able to query recipies based on general category, tates, dietary restrictions, macros, and caloric quantity. A stretch goal would be adding a budgetary element to the app but with inflation and variable food prices, and lack of available data this may not be possible.
