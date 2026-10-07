@@ -143,9 +143,19 @@ A shopping list may have many ingredients, an ingredient may be in many shopping
 A recipe may have many ingredients, an ingredient may be in many recipes.
 
 5. Endpoint list
-
+???
 6. Wireframes
-
+???
 7. Team roles
+Jhemuel:
+Front End/API
+
+Chris:
+DB
+
+Viv:
+Tbd
+
 
 8. Repo Setup
+(done)
