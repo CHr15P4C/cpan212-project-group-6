@@ -27,7 +27,7 @@ async function fetchJson(url) {
 }
 
 //function to get meal categories
-export async function mealCategories() {
+export async function categories() {
     const url = `${config.mealDBUrl}/${config.devKey}/categories.php`;
     const data = await fetchJson(url);
 
