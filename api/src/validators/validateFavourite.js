@@ -1,4 +1,4 @@
-export const validateRecipeInput = (data, isUpdate = false) => {
+export const validateFavouriteInput = (data, isUpdate = false) => {
     const errors = {};
 
     // If it's a create request, name and ingredients are required.

@@ -1,5 +1,7 @@
 import express from 'express';
-import { recipeRouter } from './routes/recipes.routes.js';
+import { favouriteRouter } from './routes/favourites.routes.js';
+import { categoriesRouter } from './routes/categories.routes.js';
+import { cacheRouter } from './routes/cache.routes.js';
 import { notFoundHandler, globalErrorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -8,7 +10,9 @@ const PORT = process.env.PORT || 4000;
 app.use(express.json());
 
 // Routes
-app.use('/api/recipes', recipeRouter);
+app.use('/api/recipes', favouriteRouter);
+app.use('/api', categoriesRouter);
+app.use('/api', cacheRouter);
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to the Express 5 API!' });
 });
