@@ -22,6 +22,7 @@ export const getFavouritesByIdController = (req, res, next) => {
         if (!favourite) {
             return res.status(404).json({
                 error: {
+                    status: 404,
                     message: 'Favourite not found',
                     details: { id: `Favourite with id ${req.params.id} does not exist` }
                 }
