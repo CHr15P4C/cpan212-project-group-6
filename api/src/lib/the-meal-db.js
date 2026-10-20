@@ -29,9 +29,10 @@ async function fetchJson(url) {
 //function to get meal categories
 export async function getCategories() {
     const url = `${config.mealDBUrl}/${config.devKey}/categories.php`;
+    //const url = `https://www.themealdb.com/api/json/v1/1/categories.php`
     const data = await fetchJson(url);
 
-    if (!data.results || data.results.length === 0) {
+    if (!data.categories || data.categories.length === 0) {
     throw new HttpError(404, `:No Categories Found`);
   }
 

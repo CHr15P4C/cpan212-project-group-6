@@ -1,8 +1,8 @@
-import { getCategoriesCached } from "../lib/categories";
+import { getCategoriesCached } from "../lib/categories.js";
 
-export const getCategoriesController = (req, res, next) => {
+export const getCategoriesController = async (req, res, next) => {
     try {
-        const categories = getCategoriesCached();
+        const categories = await getCategoriesCached();
         res.status(200).json(categories);
     } catch (error) {
         next(error);

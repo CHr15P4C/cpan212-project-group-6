@@ -9,8 +9,8 @@ import {
 
 export const favouriteRouter = Router();
 
-favouriteRouter.get('/', getFavouritesController);
-favouriteRouter.get('/:id', getFavouritesByIdController);
-favouriteRouter.post('/', createFavouriteController);
-favouriteRouter.put('/:id', updateFavouriteController);
-favouriteRouter.delete('/:id', deleteFavouriteController);
+favouriteRouter.get('/favourites/', getFavouritesController);
+favouriteRouter.get('/favourites/:id', getFavouritesByIdController);
+favouriteRouter.post('/favourites/', createFavouriteController);
+favouriteRouter.put('/favourites/:id', updateFavouriteController);
+favouriteRouter.delete('/favourites/:id', deleteFavouriteController);

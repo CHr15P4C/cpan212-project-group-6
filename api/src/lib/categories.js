@@ -1,4 +1,4 @@
-import { getCategories } from "./the-meal-db";
+import { getCategories } from "./the-meal-db.js";
 import { getCache, setCache } from './cache.js';
 
 export async function getCategoriesCached(){
