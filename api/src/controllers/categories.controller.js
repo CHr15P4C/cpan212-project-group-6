@@ -1,1 +1,0 @@
-import { categories } from "../lib/the-meal-db";
