@@ -5,7 +5,7 @@ import {
     updateRecipe, 
     deleteRecipe 
 } from '../lib/recipes.js';
-import { validateInput } from '../lib/validator.js';
+import { validateRecipeInput } from '../validators/validateRecipe.js';
 
 export const getRecipesController = (req, res, next) => {
     try {
@@ -35,7 +35,7 @@ export const getRecipeByIdController = (req, res, next) => {
 
 export const createRecipeController = (req, res, next) => {
     try {
-        const { isValid, errors } = validateInput(req.body, false);
+        const { isValid, errors } = validateRecipeInput(req.body, false);
         if (!isValid) {
             return res.status(400).json({
                 error: {
@@ -54,7 +54,7 @@ export const createRecipeController = (req, res, next) => {
 
 export const updateRecipeController = (req, res, next) => {
     try {
-        const { isValid, errors } = validateInput(req.body, true);
+        const { isValid, errors } = validateRecipeInput(req.body, true);
         if (!isValid) {
             return res.status(400).json({
                 error: {

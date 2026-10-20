@@ -1,6 +1,7 @@
 import { config } from '../config.js';
 import { HttpError } from './http-error.js';
 
+//fetch error handling from a1
 async function fetchJson(url) {
   let res;
   try {
@@ -23,4 +24,17 @@ async function fetchJson(url) {
   } catch (err) {
     throw new HttpError(502, 'Could not get a valid response from the meal db');
   }
+}
+
+//function to get meal categories
+export async function mealCategories() {
+    const url = `${config.mealDBUrl}/${config.devKey}/categories.php`;
+    const data = await fetchJson(url);
+
+    if (!data.results || data.results.length === 0) {
+    throw new HttpError(404, `:No Categories Found`);
+  }
+
+  return data;
+
 }

@@ -13,8 +13,8 @@ function readWholeNumber(name, fallback) {
 
 export const config = {
   port: process.env.PORT || 4000,
-  geocodingUrl: process.env.THEMEALDBURL || 'https://www.themealdb.com/api/json/v1',
-  devKey: process.env.DEVKEY || '/1',
+  mealDBUrl: process.env.THEMEALDBURL || 'https://www.themealdb.com/api/json/v1',
+  devKey: process.env.DEVKEY || '1',
   upstreamTimeoutMs: readWholeNumber('UPSTREAM_TIMEOUT_MS', 5000),
   cacheTtlSeconds: readWholeNumber('CACHE_TTL_SECONDS', 600),
 };
