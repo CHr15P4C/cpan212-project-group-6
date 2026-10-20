@@ -1,7 +1,7 @@
 import {Router} from 'express';
 import { getRecipes, getRecipesById, createRecipe, updateRecipe, deleteRecipe } from '../lib/recipes';
 
-const recipeRouter = Router();
+export const recipeRouter = Router();
 
 recipeRouter.get('/', (req, res)=>{
     res.json(getRecipes());
