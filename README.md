@@ -3,7 +3,6 @@ Members- Jhemuel Panit, Christopher Pacitti, Vivian Onyejiaka
 
 A Meal planner app.
 
-AI Usage:
-M2:
-gemeni was used for troubleshooting different errors as they cropped up. 
-Mostly incorect syntax for async functions.
+## AI use
+
+I used Claude. I used it to debugged,I used it to help me fix mistakes and cheak if the code is working not only ones but make it reliabley.
