@@ -8,12 +8,29 @@ function findIndexOrThrow(id) {
   return index;
 }
 
+
 export function listRecipes(req, res) {
-  const { category } = req.query;
-  const result =
-    typeof category === 'string' && category.trim()
-      ? recipes.filter((r) => r.category?.toLowerCase() === category.trim().toLowerCase())
-      : recipes;
+  const { category, search } = req.query;
+
+  let result = [...recipes];
+
+  if (typeof category === 'string' && category.trim()) {
+    result = result.filter(
+      (r) => r.category?.toLowerCase() === category.trim().toLowerCase()
+    );
+  }
+
+  if (typeof search === 'string' && search.trim()) {
+    const keyword = search.trim().toLowerCase();
+
+    result = result.filter((r) =>
+      r.title.toLowerCase().includes(keyword) ||
+      r.ingredients.some((i) =>
+        i.name.toLowerCase().includes(keyword)
+      )
+    );
+  }
+
   res.status(200).json(result);
 }
 
