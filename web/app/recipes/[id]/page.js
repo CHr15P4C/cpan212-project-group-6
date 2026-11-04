@@ -1,43 +1,54 @@
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getRecipeById } from '../../../lib/recipes';
-import styles from './page.module.css';
+import Link from 'next/link';
+import { Suspense } from 'react';
 
-export default async function RecipePage({ params }) {
-  const routeParams = await params;
-  const recipe = await getRecipeById(routeParams.id);
+async function getRecipe(id) {
+  const res = await fetch(`http://localhost:4000/api/recipes/${id}`, { cache: 'no-store' });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error('Failed to fetch recipe');
+  return res.json();
+}
+
+export default async function RecipeDetailPage({ params }) {
+  const { id } = await params;
+  const recipe = await getRecipe(id);
 
   if (!recipe) {
     notFound();
   }
 
   return (
-    <article>
-      <p className={styles.back}>
-        <Link href="/recipes">Back to all recipes</Link> | <Link href={`/recipes/${recipe.id}/edit`}>Edit recipe</Link>
-      </p>
-      {recipe.imageUrl && (
-        <img 
-          src={recipe.imageUrl} 
-          alt={recipe.title} 
-          style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px', marginBottom: '1rem' }} 
-        />
-      )}
-      <p className={styles.category}>{recipe.category}</p>
-      <h1 className={styles.title}>{recipe.title}</h1>
-      {recipe.area && <p><strong>Area:</strong> {recipe.area}</p>}
+    <div style={{ padding: '2rem 0' }}>
+      <Link href="/recipes" style={{ color: '#7f8c8d', textDecoration: 'none', fontSize: '0.9rem' }}>&larr; Back to Recipes</Link>
       
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
+        <h2>{recipe.title}</h2>
+        <Link href={`/recipes/${recipe.id}/edit`} style={{ background: '#e67e22', color: '#fff', padding: '0.4rem 0.8rem', borderRadius: '4px', textDecoration: 'none', fontSize: '0.9rem' }}>
+          Edit Recipe
+        </Link>
+      </div>
+
+      <p style={{ color: '#7f8c8d' }}>
+        Category: <strong>{recipe.category || 'None'}</strong> {recipe.area ? `| Area: ${recipe.area}` : ''}
+      </p>
+
+      {recipe.imageUrl && (
+        <img src={recipe.imageUrl} alt={recipe.title} style={{ maxWidth: '300px', borderRadius: '6px', margin: '1rem 0' }} />
+      )}
+
       <h3>Ingredients</h3>
       <ul>
-        {recipe.ingredients.map((ing, index) => (
-          <li key={index}>
+        {recipe.ingredients.map((ing, idx) => (
+          <li key={idx}>
             {ing.measure ? `${ing.measure} ` : ''}{ing.name}
           </li>
         ))}
       </ul>
 
       <h3>Instructions</h3>
-      <p style={{ whiteSpace: 'pre-line' }}>{recipe.instructions}</p>
-    </article>
+      <p style={{ whiteSpace: 'pre-line', background: '#f8f9fa', padding: '1rem', borderRadius: '6px' }}>
+        {recipe.instructions}
+      </p>
+    </div>
   );
 }

@@ -83,3 +83,116 @@ export async function searchMeals(query) {
   cache.set(cacheKey, { value, expiresAt: Date.now() + CACHE_TTL_MS });
   return value;
 }
+
+//adding function to get categories
+
+export async function getCategories() {
+  const key = process.env.THEMEALDB_API_KEY;
+  if (!key) {
+    throw new HttpError(500, 'Server is missing THEMEALDB_API_KEY (copy .env.example to .env)');
+  }
+  const url = `${BASE_URL}/${encodeURIComponent(key)}/list.php?c=list`;
+
+  let response;
+  try {
+    response = await fetch(url, { signal: AbortSignal.timeout(TIMEOUT_MS) });
+  } catch (err) {
+    if (err.name === 'TimeoutError') {
+      throw new HttpError(504, `TheMealDB did not answer within ${TIMEOUT_MS} ms`);
+    }
+    throw new HttpError(502, 'Could not reach TheMealDB');
+  }
+
+  if (!response.ok) {
+    throw new HttpError(502, `TheMealDB returned status ${response.status}`);
+  }
+
+  let data;
+  try {
+    data = await response.json();
+  } catch {
+    throw new HttpError(502, 'TheMealDB returned a reply we could not read');
+  }
+
+  const meals = Array.isArray(data?.meals) ? data.meals : [];
+  // Extract just the category names into a clean array of strings
+  return meals.map((m) => m.strCategory).filter(Boolean);
+}
+
+//meals by category
+
+export async function filterMealsByCategory(category) {
+  const key = process.env.THEMEALDB_API_KEY;
+  if (!key) {
+    throw new HttpError(500, 'Server is missing THEMEALDB_API_KEY (copy .env.example to .env)');
+  }
+  const url = `${BASE_URL}/${encodeURIComponent(key)}/filter.php?c=${encodeURIComponent(category)}`;
+
+  let response;
+  try {
+    response = await fetch(url, { signal: AbortSignal.timeout(TIMEOUT_MS) });
+  } catch (err) {
+    if (err.name === 'TimeoutError') {
+      throw new HttpError(504, `TheMealDB did not answer within ${TIMEOUT_MS} ms`);
+    }
+    throw new HttpError(502, 'Could not reach TheMealDB');
+  }
+
+  if (!response.ok) {
+    throw new HttpError(502, `TheMealDB returned status ${response.status}`);
+  }
+
+  let data;
+  try {
+    data = await response.json();
+  } catch {
+    throw new HttpError(502, 'TheMealDB returned a reply we could not read');
+  }
+
+  const meals = Array.isArray(data?.meals) ? data.meals : [];
+  
+  // filter.php returns summary items, map them to your app's meal schema shape
+  return meals.map((meal) => ({
+    sourceMealId: meal.idMeal,
+    title: meal.strMeal,
+    category: category,
+    area: null,
+    instructions: '',
+    imageUrl: meal.strMealThumb ?? null,
+    ingredients: [],
+  }));
+}
+
+//look up meal by id:
+
+export async function lookupMealById(mealId) {
+  const key = process.env.THEMEALDB_API_KEY;
+  if (!key) {
+    throw new HttpError(500, 'Server is missing THEMEALDB_API_KEY (copy .env.example to .env)');
+  }
+  const url = `${BASE_URL}/${encodeURIComponent(key)}/lookup.php?i=${encodeURIComponent(mealId)}`;
+
+  let response;
+  try {
+    response = await fetch(url, { signal: AbortSignal.timeout(TIMEOUT_MS) });
+  } catch (err) {
+    if (err.name === 'TimeoutError') {
+      throw new HttpError(504, `TheMealDB did not answer within ${TIMEOUT_MS} ms`);
+    }
+    throw new HttpError(502, 'Could not reach TheMealDB');
+  }
+
+  if (!response.ok) {
+    throw new HttpError(502, `TheMealDB returned status ${response.status}`);
+  }
+
+  let data;
+  try {
+    data = await response.json();
+  } catch {
+    throw new HttpError(502, 'TheMealDB returned a reply we could not read');
+  }
+
+  const meals = Array.isArray(data?.meals) ? data.meals : [];
+  return meals.map(toMeal);
+}

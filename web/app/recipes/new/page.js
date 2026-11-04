@@ -1,102 +1,149 @@
 'use client';
 
-'use client';
-
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { CATEGORIES } from '../../../lib/categories';
-import styles from './page.module.css';
+import { useApp } from '@/context/AppContext';
 
-
-
-export default function NewRecipePage() {
+export default function CreateRecipePage() {
   const router = useRouter();
-  const [errors, setErrors] = useState({});
-  const [message, setMessage] = useState('');
-  const [submitting, setSubmitting] = useState(false);
+  const { showNotification } = useApp();
 
-  async function handleSubmit(event) {
-    event.preventDefault();
-    setErrors({});
-    setMessage('');
-    setSubmitting(true);
+  const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('');
+  const [area, setArea] = useState('');
+  const [instructions, setInstructions] = useState('');
+  const [ingredients, setIngredients] = useState([{ name: '', measure: '' }]);
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const form = new FormData(event.currentTarget);
-    const newRecipe = {
-      title: form.get('title'),
-      category: form.get('category'),
-      area: form.get('area'),
-      instructions: form.get('instructions'),
-      ingredients: [{ name: form.get('ingredientName'), measure: form.get('ingredientMeasure') }],
-    };
+  const handleAddIngredient = () => {
+    setIngredients([...ingredients, { name: '', measure: '' }]);
+  };
+
+  const handleIngredientChange = (index, field, value) => {
+    const updated = [...ingredients];
+    updated[index][field] = value;
+    setIngredients(updated);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setFieldErrors({});
 
     try {
       const res = await fetch('/api/recipes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newRecipe),
+        body: JSON.stringify({ title, category, area, instructions, ingredients }),
       });
-      const body = await res.json();
+
+      const data = await res.json();
 
       if (!res.ok) {
-        if (body.error?.details) {
-          setErrors(
-            body.error.details.reduce((acc, curr) => ({ ...acc, [curr.field]: curr.message }), {})
-          );
+        if (res.status === 400 && data.error?.details) {
+          const errorsObj = {};
+          data.error.details.forEach((err) => {
+            errorsObj[err.field] = err.message;
+          });
+          setFieldErrors(errorsObj);
+        } else {
+          alert(data.error?.message || 'Failed to create recipe');
         }
-        setMessage(body.error?.message || 'Validation failed');
-        setSubmitting(false);
+        setIsSubmitting(false);
         return;
       }
 
-      router.push('/recipes/' + body.id);
+      showNotification('Recipe created successfully!');
+      router.push(`/recipes/${data.id}`);
     } catch (err) {
-      setMessage('Could not reach the recipes API. Check that it is running on port 4000.');
-      setSubmitting(false);
+      alert('An unexpected error occurred.');
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
-    <>
-      <h1>New Recipe</h1>
-      {message && <div role="alert" className={styles.summary}><p>{message}</p></div>}
-      <form className={styles.form} onSubmit={handleSubmit} noValidate>
-        <div className={styles.field}>
-          <label htmlFor="title">Title</label>
-          <input id="title" name="title" required />
-          {errors.title && <p className={styles.error}>{errors.title}</p>}
+    <div style={{ padding: '2rem 0' }}>
+      <h2>Create New Recipe</h2>
+      <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '1rem', maxWidth: '600px' }}>
+        <div>
+          <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.3rem' }}>Title</label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+          />
+          {fieldErrors.title && <span style={{ color: 'red', fontSize: '0.85rem' }}>{fieldErrors.title}</span>}
         </div>
 
-        <div className={styles.field}>
-          <label htmlFor="category">Category</label>
-          <select id="category" name="category" defaultValue="">
-            <option value="">Choose category</option>
-            {CATEGORIES.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div>
+            <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.3rem' }}>Category</label>
+            <input
+              type="text"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+            />
+            {fieldErrors.category && <span style={{ color: 'red', fontSize: '0.85rem' }}>{fieldErrors.category}</span>}
+          </div>
+          <div>
+            <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.3rem' }}>Area (Cuisine)</label>
+            <input
+              type="text"
+              value={area}
+              onChange={(e) => setArea(e.target.value)}
+              style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+            />
+          </div>
         </div>
 
-        <div className={styles.field}>
-          <label htmlFor="ingredientName">Main Ingredient</label>
-          <input id="ingredientName" name="ingredientName" placeholder="e.g. chicken breast" />
+        <div>
+          <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.3rem' }}>Ingredients</label>
+          {ingredients.map((ing, index) => (
+            <div key={index} style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+              <input
+                type="text"
+                placeholder="Ingredient name"
+                value={ing.name}
+                onChange={(e) => handleIngredientChange(index, 'name', e.target.value)}
+                style={{ flex: 2, padding: '0.4rem', borderRadius: '4px', border: '1px solid #ccc' }}
+              />
+              <input
+                type="text"
+                placeholder="Measure (e.g. 1 cup)"
+                value={ing.measure}
+                onChange={(e) => handleIngredientChange(index, 'measure', e.target.value)}
+                style={{ flex: 1, padding: '0.4rem', borderRadius: '4px', border: '1px solid #ccc' }}
+              />
+            </div>
+          ))}
+          {fieldErrors.ingredients && <span style={{ color: 'red', fontSize: '0.85rem' }}>{fieldErrors.ingredients}</span>}
+          <button type="button" onClick={handleAddIngredient} style={{ background: '#ecf0f1', border: 'none', padding: '0.3rem 0.6rem', borderRadius: '4px', cursor: 'pointer', marginTop: '0.3rem' }}>
+            + Add Ingredient
+          </button>
         </div>
 
-        <div className={styles.field}>
-          <label htmlFor="ingredientMeasure">Measure</label>
-          <input id="ingredientMeasure" name="ingredientMeasure" placeholder="e.g. 2 cups" />
+        <div>
+          <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.3rem' }}>Instructions</label>
+          <textarea
+            rows={5}
+            value={instructions}
+            onChange={(e) => setInstructions(e.target.value)}
+            style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+          />
+          {fieldErrors.instructions && <span style={{ color: 'red', fontSize: '0.85rem' }}>{fieldErrors.instructions}</span>}
         </div>
 
-        <div className={styles.field}>
-          <label htmlFor="instructions">Instructions</label>
-          <textarea id="instructions" name="instructions" rows={4} />
-          {errors.instructions && <p className={styles.error}>{errors.instructions}</p>}
-        </div>
-
-        <button className={styles.submit} type="submit" disabled={submitting}>
-          {submitting ? 'Creating...' : 'Create Recipe'}
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          style={{ background: isSubmitting ? '#95a5a6' : '#27ae60', color: '#fff', border: 'none', padding: '0.75rem', borderRadius: '4px', fontWeight: 'bold', cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
+        >
+          {isSubmitting ? 'Saving...' : 'Save Recipe'}
         </button>
       </form>
-    </>
+    </div>
   );
 }
