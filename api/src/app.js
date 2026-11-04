@@ -3,8 +3,7 @@ import recipesRouter from './routes/recipes.js';
 import mealPlansRouter from './routes/mealplans.js';
 import externalRouter from './routes/external.js';
 import { notFound, errorHandler } from './middleware/errors.js';
-import { favouriteRouter } from './routes/favourites.routes.js';
-import { cacheRouter } from './routes/cache.routes.js';
+
 
 
 const app = express();
@@ -14,8 +13,7 @@ app.use(express.json());
 app.use('/api/recipes', recipesRouter);
 app.use('/api/mealplans', mealPlansRouter);
 app.use('/api/external', externalRouter);
-app.use('/api', favouriteRouter);
-app.use('/api', cacheRouter);
+
 
 
 
