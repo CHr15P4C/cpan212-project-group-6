@@ -1,9 +1,13 @@
 'use client';
 
+'use client';
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { CATEGORIES } from '@/lib/categories';
+import { CATEGORIES } from '../../../lib/categories';
 import styles from './page.module.css';
+
+
 
 export default function NewRecipePage() {
   const router = useRouter();

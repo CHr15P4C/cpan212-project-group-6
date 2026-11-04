@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { CATEGORIES } from '@/lib/categories';
-import styles from '../new/page.module.css';
+import { CATEGORIES } from '../../../../lib/categories';
+import styles from '../../new/page.module.css';
 
 export default function EditRecipePage() {
   const router = useRouter();
