@@ -14,3 +14,5 @@ I used Gemeni for assistance, setup, styling, debug.
 M3 general overview video:
 https://youtu.be/zEv3Olia1zw
 
+M3 Individual Chris Pacitti:
+https://youtu.be/jKs6IrQqBpY
