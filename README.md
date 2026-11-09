@@ -16,3 +16,6 @@ https://youtu.be/zEv3Olia1zw
 
 M3 Individual Chris Pacitti:
 https://youtu.be/jKs6IrQqBpY
+
+M3 Individual Jhemuel Panit:
+https://youtu.be/Fs4nvwmHa2I
