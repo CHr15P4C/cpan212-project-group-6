@@ -15,3 +15,6 @@ Christopher Pacitti
 Set up local storage object favourites with methods, routing, validation, error handling
 set up external api with methods, routing
 Set up cache
+
+M3 
+Christopher Pacitti did main vid of explaning what is in are M2
