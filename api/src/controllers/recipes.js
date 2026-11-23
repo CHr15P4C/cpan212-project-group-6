@@ -67,3 +67,4 @@ export function deleteRecipe(req, res) {
   }
   res.status(204).end();
 }
+
