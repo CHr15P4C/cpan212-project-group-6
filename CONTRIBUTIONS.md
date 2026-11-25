@@ -16,5 +16,10 @@ Set up local storage object favourites with methods, routing, validation, error 
 set up external api with methods, routing
 Set up cache
 
-M3 
-Christopher Pacitti did main vid of explaning what is in are M2
+M3.
+Christopher Pacitti 
+did main vid of explaning what is in are M2
+
+M4.
+Jhemuel Panit:
+set up mongoDB and merged to main 
