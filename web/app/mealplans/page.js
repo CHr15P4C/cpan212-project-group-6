@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import PlanTools from './PlanTools';
+import PlanTools from './PlanTools';
 
 async function getMealPlans() {
   const res = await fetch('http://localhost:4000/api/mealplans', { cache: 'no-store' });
@@ -50,6 +51,7 @@ export default async function MealPlansPage() {
                 </span>
               </h3>
               <PlanTools id={plan.id} />
+              
                     
               <div style={{ display: 'grid', gap: '0.75rem' }}>
                 {plan.entries.map((entry, idx) => {
