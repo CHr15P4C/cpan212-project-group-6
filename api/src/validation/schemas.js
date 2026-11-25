@@ -68,6 +68,7 @@ export const mealPlanSchema = z
             day: z.enum(DAYS, `day must be one of: ${DAYS.join(', ')}`),
             mealType: z.enum(MEAL_TYPES, `mealType must be one of: ${MEAL_TYPES.join(', ')}`),
             recipeId: requiredString('recipeId').min(1, 'recipeId is required'),
+            batches: z.number().int().min(1).max(20).default(1),
             notes: z.string().trim().max(LIMITS.notes, tooLong('notes', LIMITS.notes)).optional(),
           })
           .strict(),
