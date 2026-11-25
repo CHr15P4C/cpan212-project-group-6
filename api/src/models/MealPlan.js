@@ -1,3 +1,4 @@
+
 import mongoose from 'mongoose';
 import { DAYS, MEAL_TYPES, LIMITS } from '../constants.js';
 import { isRealDate } from '../utils/dates.js';
@@ -22,6 +23,15 @@ const entrySchema = new mongoose.Schema(
       required: [true, 'recipeId is required'],
       cast: 'recipeId must be a valid recipe id',
     },
+    
+batches: {
+  type: Number,
+  default: 1,
+  min: 1,
+  max: 20,
+  validate: Number.isInteger,
+},
+
     notes: {
       type: String,
       trim: true,
@@ -47,6 +57,10 @@ const mealPlanSchema = new mongoose.Schema(
       match: [/^\d{4}-\d{2}-\d{2}$/, 'weekStart must look like YYYY-MM-DD'],
       validate: { validator: isRealDate, message: 'weekStart must be a real date' },
     },
+    checkedGroceries: {
+  type: [String],
+  default: [],
+},
     entries: {
       type: [entrySchema],
       default: [],
@@ -63,3 +77,5 @@ const mealPlanSchema = new mongoose.Schema(
 mealPlanSchema.index({ 'entries.recipeId': 1 });
 
 export const MealPlan = mongoose.model('MealPlan', mealPlanSchema);
+
+
