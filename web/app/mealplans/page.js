@@ -28,6 +28,10 @@ export default async function MealPlansPage() {
   });
 
   const recipeMap = Object.fromEntries(await Promise.all(recipePromises));
+  const displayRecipe =
+  typeof entry.recipeId === 'object'
+    ? entry.recipeId
+    : recipe;
 
   return (
     <div style={{ padding: '2rem 0' }}>
