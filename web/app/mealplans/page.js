@@ -49,7 +49,8 @@ export default async function MealPlansPage() {
                   (Week of {plan.weekStart})
                 </span>
               </h3>
-
+              <PlanTools id={plan.id} />
+                    
               <div style={{ display: 'grid', gap: '0.75rem' }}>
                 {plan.entries.map((entry, idx) => {
                   const recipe = recipeMap[entry.recipeId];
